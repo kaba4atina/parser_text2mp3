@@ -1,0 +1,41 @@
+#parsing www.amalgama-lab.com & text->mp3
+from gtts import gTTS
+import requests
+from bs4 import BeautifulSoup
+
+#text to voice using Google
+def text2voiceeng(txt, name):
+    rec = gTTS(text=txt, lang='en')
+    rec.save(name + '.mp3')
+    return "Correctly done"
+def text2voiceru(txt, name):
+    rec = gTTS(text=txt, lang='ru')
+    rec.save(name + '.mp3')
+    return "Correctly done"
+
+#parse functions
+def parser(url):
+    file = requests.get(url)
+    soup = BeautifulSoup(file.content, 'lxml')
+    data = soup.find_all('div', class_ = 'original')
+    return data
+def parser_name(url):
+    file = requests.get(url)
+    soup = BeautifulSoup(file.content, 'lxml')
+    nam = soup.find('h2', class_='original')
+    return nam
+
+print('Input url')
+url1 = input()
+print('If the song is English input 1. Если русская - введите 2')
+language = int(input())
+k = ''
+n1 = parser_name(url1).text
+f1 = parser(url1)
+for i in range(len(f1)):
+    k += f1[i].text
+    k += ' '
+if language == 1:
+    print(text2voiceeng(k, n1))
+else:
+    print(text2voiceru(k, n1))
